@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import './Home.css'
 import { CoinContext } from '../../context/CoinContext'
-import { Link } from 'react-router-dom';
 import Sparkline from "../../components/Sparkline/Sparkline";
 import ChartModal from "../../components/ChartModal/ChartModal";
 
@@ -73,7 +72,7 @@ const Home = () => {
           <p className='market-cap'>Market Cap</p>
         </div>
         {
-          displayCoin.slice(0,10).map((item, index)=>(
+          displayCoin.slice(0,100).map((item, index)=>(
             <div
               className="table-layout"
               key={index}

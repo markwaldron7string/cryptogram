@@ -41,72 +41,68 @@ const LineChart = ({ historicalData }) => {
 
   if (!data.length) {
     return (
-      <p style={{ textAlign: "center", marginTop: "40px" }}>
-        Loading chart...
-      </p>
+      <p style={{ textAlign: "center", marginTop: "40px" }}>Loading chart...</p>
     );
   }
-
-  const first = data[0].price;
-  const last = data[data.length - 1].price;
-  const isPositive = last >= first;
 
   return (
     <div style={{ width: "100%", height: "100%" }}>
       <ResponsiveContainer>
         <ReLineChart data={data}>
-          
-          {/* Gradient definitions */}
-          <defs>
-            <linearGradient id="colorUp" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#00ff9d" stopOpacity={0.5} />
-              <stop offset="100%" stopColor="#00ff9d" stopOpacity={0} />
-            </linearGradient>
+          {(() => {
+            const isPositive = data[data.length - 1].price >= data[0].price;
 
-            <linearGradient id="colorDown" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#ff4d4f" stopOpacity={0.5} />
-              <stop offset="100%" stopColor="#ff4d4f" stopOpacity={0} />
-            </linearGradient>
-          </defs>
+            return (
+              <>
+                <defs>
+                  <linearGradient id="colorUp" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#00ff9d" stopOpacity={0.5} />
+                    <stop offset="100%" stopColor="#00ff9d" stopOpacity={0} />
+                  </linearGradient>
 
-          {/* Axes */}
-          <XAxis dataKey="date" stroke="#aaa" />
-          <YAxis stroke="#aaa" />
+                  <linearGradient id="colorDown" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#ff4d4f" stopOpacity={0.5} />
+                    <stop offset="100%" stopColor="#ff4d4f" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
 
-          {/* Tooltip */}
-          <Tooltip
-            content={<CustomTooltip isPositive={isPositive} />}
-            cursor={{
-              stroke: isPositive ? "#00ff9d" : "#ff4d4f",
-              strokeWidth: 1,
-              strokeDasharray: "3 3",
-            }}
-          />
+                <XAxis dataKey="date" stroke="#aaa" />
+                <YAxis stroke="#aaa" />
 
-          {/* 🔥 Gradient Area */}
-          <Area
-            type="monotone"
-            dataKey="price"
-            stroke="none"
-            fill={isPositive ? "url(#colorUp)" : "url(#colorDown)"}
-          />
+                <Tooltip
+                  content={<CustomTooltip isPositive={isPositive} />}
+                  cursor={{
+                    stroke: isPositive ? "#00ff9d" : "#ff4d4f",
+                    strokeWidth: 1,
+                    strokeDasharray: "3 3",
+                  }}
+                />
 
-          {/* 📈 Main Line */}
-          <Line
-            type="monotone"
-            dataKey="price"
-            stroke={isPositive ? "#00ff9d" : "#ff4d4f"}
-            strokeWidth={3}
-            dot={false}
-            isAnimationActive
-            animationDuration={1200}
-            animationEasing="ease-in-out"
-            style={{
-              filter: isPositive
-                ? "drop-shadow(0 0 8px #00ff9d)"
-                : "drop-shadow(0 0 8px #ff4d4f)",
-            }}
-          />
+                <Area
+                  type="monotone"
+                  dataKey="price"
+                  stroke="none"
+                  fill={isPositive ? "url(#colorUp)" : "url(#colorDown)"}
+                />
+
+                <Line
+                  type="monotone"
+                  dataKey="price"
+                  stroke={isPositive ? "#00ff9d" : "#ff4d4f"}
+                  strokeWidth={3}
+                  dot={false}
+                  isAnimationActive
+                  animationDuration={1200}
+                  animationEasing="ease-in-out"
+                  style={{
+                    filter: isPositive
+                      ? "drop-shadow(0 0 8px #00ff9d)"
+                      : "drop-shadow(0 0 8px #ff4d4f)",
+                  }}
+                />
+              </>
+            );
+          })()}
         </ReLineChart>
       </ResponsiveContainer>
     </div>
