@@ -2,12 +2,16 @@ import React, { useContext, useEffect, useState } from 'react'
 import './Home.css'
 import { CoinContext } from '../../context/CoinContext'
 import { Link } from 'react-router-dom';
+import Sparkline from "../../components/Sparkline/Sparkline";
+import ChartModal from "../../components/ChartModal/ChartModal";
 
 const Home = () => {
 
   const {allCoins, currency} = useContext(CoinContext);
   const [displayCoin, setDisplayCoin] = useState([]);
   const [input, setInput] = useState('');
+  const [selectedCoin, setSelectedCoin] = useState(null);
+  const [modalData, setModalData] = useState(null);
 
   const inputHandler = (event)=>{
     setInput(event.target.value);
@@ -23,6 +27,20 @@ const Home = () => {
     })
     setDisplayCoin(coins);
   }
+
+  const handleRowClick = async (coin) => {
+  try {
+    const res = await fetch(
+      `https://api.coingecko.com/api/v3/coins/${coin.id}/market_chart?vs_currency=${currency.name}&days=10&interval=daily`
+    );
+    const data = await res.json();
+
+    setModalData(data);
+    setSelectedCoin(coin);
+  } catch (err) {
+    console.error(err);
+  }
+};
 
   useEffect(() => {
     setDisplayCoin(allCoins);
@@ -51,11 +69,17 @@ const Home = () => {
           <p>Coins</p>
           <p>Price</p>
           <p style={{textAlign:"center"}}>24h Change</p>
+          <p style={{ textAlign: "center" }}>7d</p>
           <p className='market-cap'>Market Cap</p>
         </div>
         {
           displayCoin.slice(0,10).map((item, index)=>(
-            <Link to={`/coin/${item.id}`} className="table-layout" key={index}>
+            <div
+              className="table-layout"
+              key={index}
+              onClick={() => handleRowClick(item)}
+              style={{ cursor: "pointer" }}
+            >
               <p>{item.market_cap_rank}</p>
               <div>
                 <img src={item.image} alt="" />
@@ -63,12 +87,26 @@ const Home = () => {
               </div>
               <p>{currency.symbol} {item.current_price.toLocaleString()}</p>
               <p className={item.price_change_percentage_24h>0?"green":"red"}>
-                {Math.floor(item.price_change_percentage_24h*100)/100}</p>
-              <p className='market-cap'>{currency.symbol} {item.market_cap.toLocaleString()}</p>
-            </Link>
+                {Math.floor(item.price_change_percentage_24h*100)/100}
+              </p>
+
+              <Sparkline data={item.sparkline_in_7d?.price} />
+
+              <p className='market-cap'>
+                {currency.symbol} {item.market_cap.toLocaleString()}
+              </p>
+            </div>
           ))
         }
       </div>
+      <ChartModal
+        coin={
+          selectedCoin && modalData
+            ? { ...selectedCoin, historicalData: modalData }
+            : null
+        }
+        onClose={() => setSelectedCoin(null)}
+        />
     </div>
   )
 }

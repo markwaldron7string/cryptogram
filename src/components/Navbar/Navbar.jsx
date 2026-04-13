@@ -5,28 +5,22 @@ import arrow_icon from "../../assets/arrow_icon.png";
 import { CoinContext } from "../../context/CoinContext";
 import { Link } from "react-router-dom";
 
-const Navbar = () => {
-
-  const {setCurrency} = useContext(CoinContext);
+const Navbar = ({ setShowToast }) => {
+  const { setCurrency } = useContext(CoinContext);
 
   const currencyHandler = (event) => {
     switch (event.target.value) {
-      case "usd": {
+      case "usd":
         setCurrency({ name: "usd", symbol: "$" });
         break;
-      }
-      case "eur": {
+      case "eur":
         setCurrency({ name: "eur", symbol: "€" });
         break;
-      }
-      case "inr": {
+      case "gbp":
         setCurrency({ name: "gbp", symbol: "£" });
         break;
-      }
-      default: {
+      default:
         setCurrency({ name: "usd", symbol: "$" });
-        break;
-      }
     }
   };
 
@@ -35,21 +29,66 @@ const Navbar = () => {
       <Link to={"/"}>
         <img src={logo} alt="" className="logo" />
       </Link>
+
       <ul>
         <Link to={"/"}>
-          <li>Home</li>
+          <li className="home-btn">Home</li>
         </Link>
-        <li>Features</li>
-        <li>Pricing</li>
-        <li>Blog</li>
+
+        <li>
+          <span
+            className="coming-soon"
+            onClick={(e) => {
+              e.preventDefault();
+              setShowToast(true);
+            }}
+            title="Coming soon"
+          >
+            Features
+          </span>
+        </li>
+
+        <li>
+          <span
+            className="coming-soon"
+            onClick={(e) => {
+              e.preventDefault();
+              setShowToast(true);
+            }}
+            title="Coming soon"
+          >
+            Pricing
+          </span>
+        </li>
+
+        <li>
+          <span
+            className="coming-soon"
+            onClick={(e) => {
+              e.preventDefault();
+              setShowToast(true);
+            }}
+            title="Coming soon"
+          >
+            Blog
+          </span>
+        </li>
       </ul>
+
       <div className="nav-right">
         <select onChange={currencyHandler}>
           <option value="usd">USD</option>
           <option value="eur">EUR</option>
-          <option value="inr">GBP</option>
+          <option value="gbp">GBP</option>
         </select>
-        <button>
+
+        <button
+          className="coming-soon-btn"
+          onClick={(e) => {
+            e.preventDefault();
+            setShowToast(true);
+          }}
+        >
           Sign Up <img src={arrow_icon} alt="" />
         </button>
       </div>

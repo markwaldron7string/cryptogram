@@ -1,29 +1,59 @@
-import React, { useEffect, useState } from 'react'
-import Chart from 'react-google-charts'
+import React, { useMemo } from "react";
+import {
+  LineChart as ReLineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 
-const LineChart = ({historicalData}) => {
+const LineChart = ({ historicalData }) => {
+  const data = useMemo(() => {
+    if (!historicalData?.prices) return [];
 
-const [data, setData] = useState([["Date","Prices"]])
+    return historicalData.prices.map(([timestamp, price]) => ({
+      date: new Date(timestamp).toLocaleDateString(),
+      price,
+    }));
+  }, [historicalData]);
 
-useEffect(()=>{
-    let dataCopy = [["Date","Prices"]];
-    if(historicalData.prices){
-        historicalData.prices.map((item)=>{
-            dataCopy.push([`${new Date(item[0]).toLocaleDateString().slice(0,-5)}`, item[1]])
-        })
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        setData(dataCopy);
-    } 
-},[historicalData])
+  if (!data.length) {
+    return (
+      <p style={{ textAlign: "center", marginTop: "40px" }}>
+        Loading chart...
+      </p>
+    );
+  }
+
+  const isPositive = data[data.length - 1].price > data[0].price;
 
   return (
-    <Chart
-        chartType='LineChart'
-        data={data}
-        height="100%"
-        legendToggle
-    />
-  )
-}
+    <div style={{ width: "100%", height: "100%" }}>
+      <ResponsiveContainer>
+        <ReLineChart data={data}>
+          <XAxis dataKey="date" stroke="#aaa" />
+          <YAxis stroke="#aaa" />
+          <Tooltip />
 
-export default LineChart
+          <Line
+            type="monotone"
+            dataKey="price"
+            stroke={isPositive ? "#00ff9d" : "#ff4d4f"}
+            strokeWidth={3}
+            dot={false}
+            isAnimationActive
+            animationDuration={800}
+            style={{
+              filter: isPositive
+                ? "drop-shadow(0 0 8px #00ff9d)"
+                : "drop-shadow(0 0 8px #ff4d4f)",
+            }}
+          />
+        </ReLineChart>
+      </ResponsiveContainer>
+    </div>
+  );
+};
+
+export default LineChart;

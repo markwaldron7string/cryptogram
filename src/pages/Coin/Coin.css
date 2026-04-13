@@ -52,6 +52,10 @@
     padding: 10px 0px;
     border-bottom: 1px solid #5f5d5f;
     list-style: none;
+    transition: background 0.2s ease;
+}
+.coin-info ul:hover {
+  background: rgba(255, 255, 255, 0.03);
 }
 .coin-info ul li:last-child{
     font-weight: 300;

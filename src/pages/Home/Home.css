@@ -54,14 +54,25 @@
     max-width: 800px;
     margin: auto;
     border-radius: 15px;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    overflow: hidden;
+    padding: 10px;
 }
 .table-layout{
     display: grid;
-    grid-template-columns: 0.5fr 2fr 1fr 1fr 1.5fr;
+    grid-template-columns: 0.5fr 2fr 1fr 1fr 1fr 1.5fr;
     padding: 15px 20px;
     align-items: center;
     background-color: #150225;
     border-bottom: 1px solid #3c3c3c;
+    transition: background 0.2s ease;
+}
+.table-layout:hover {
+    background-color: #1f0333;
+    transform: scale(1.01);
+    transition: all 0.2s ease;
 }
 .market-cap{
     text-align: right;
