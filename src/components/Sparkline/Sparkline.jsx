@@ -1,19 +1,20 @@
-import React, { useEffect, useState } from "react";
-import { LineChart, Line, Tooltip } from "recharts";
+import React, { useMemo } from "react";
+import { AreaChart, Area, Tooltip } from "recharts";
 
-// ✅ Move this OUTSIDE the component
-const CustomTooltip = ({ active, payload }) => {
+const SparkTooltip = ({ active, payload, color }) => {
   if (active && payload && payload.length) {
     return (
       <div
         style={{
-          background: "#1f0333",
-          border: "1px solid #444",
-          padding: "6px 10px",
-          borderRadius: "6px",
-          color: "#fff",
-          fontSize: "12px",
-          boxShadow: "0 2px 10px rgba(0,0,0,0.3)",
+          background: "rgba(10,2,20,0.9)",
+          border: `1px solid ${color}55`,
+          padding: "4px 8px",
+          borderRadius: "5px",
+          color,
+          fontSize: "11px",
+          fontWeight: 600,
+          whiteSpace: "nowrap",
+          pointerEvents: "none",
         }}
       >
         ${payload[0].value.toLocaleString(undefined, {
@@ -26,56 +27,60 @@ const CustomTooltip = ({ active, payload }) => {
   return null;
 };
 
-const Sparkline = ({ data }) => {
-  const [liveData, setLiveData] = useState(data || []);
+const Sparkline = ({ data, id = "coin" }) => {
+  const { formattedData, isPositive } = useMemo(() => {
+    if (!data || data.length === 0) return { formattedData: [], isPositive: true };
 
-  useEffect(() => {
-    if (!data || data.length === 0) return;
+    // Downsample to ~30 points for a clean sparkline
+    const step = Math.max(1, Math.floor(data.length / 30));
+    const sampled = data.filter((_, i) => i % step === 0 || i === data.length - 1);
 
-    const interval = setInterval(() => {
-      setLiveData((prev) => {
-        if (!prev || prev.length === 0) return prev;
-
-        const last = prev[prev.length - 1];
-        const newPoint = last + (Math.random() - 0.5) * 50;
-
-        return [...prev.slice(1), newPoint];
-      });
-    }, 2000);
-
-    return () => clearInterval(interval);
+    return {
+      formattedData: sampled.map((price, index) => ({ price, index })),
+      isPositive: data[data.length - 1] >= data[0],
+    };
   }, [data]);
 
-  if (!liveData || liveData.length === 0) return null;
+  if (formattedData.length === 0) {
+    return <div style={{ width: 120, height: 40 }} />;
+  }
 
-  const formattedData = liveData.map((price, index) => ({
-    price,
-    index,
-  }));
-
-  const isPositive = liveData[liveData.length - 1] > liveData[0];
+  const color = isPositive ? "#00C087" : "#FF4747";
+  const gradId = `spark-grad-${id}`;
 
   return (
-    <div style={{ width: "120px", height: "50px" }}>
-      <LineChart width={120} height={50} data={formattedData}>
-        <Tooltip content={<CustomTooltip />} />
+    <div style={{ width: 120, height: 40 }}>
+      <AreaChart
+        width={120}
+        height={40}
+        data={formattedData}
+        margin={{ top: 3, right: 3, bottom: 3, left: 3 }}
+      >
+        <defs>
+          <linearGradient id={gradId} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor={color} stopOpacity={0.35} />
+            <stop offset="80%" stopColor={color} stopOpacity={0.05} />
+            <stop offset="100%" stopColor={color} stopOpacity={0} />
+          </linearGradient>
+        </defs>
 
-        <Line
+        <Tooltip
+          content={<SparkTooltip color={color} />}
+          cursor={{ stroke: color, strokeWidth: 1, strokeDasharray: "3 3" }}
+          allowEscapeViewBox={{ x: true, y: true }}
+        />
+
+        <Area
           type="monotone"
           dataKey="price"
-          stroke={isPositive ? "#00ff9d" : "#ff4d4f"}
-          strokeWidth={2}
+          stroke={color}
+          strokeWidth={1.5}
+          fill={`url(#${gradId})`}
           dot={false}
-          isAnimationActive
-          animationDuration={800}
-          animationEasing="ease-in-out"
-          style={{
-            filter: isPositive
-              ? "drop-shadow(0 0 6px #00ff9d)"
-              : "drop-shadow(0 0 6px #ff4d4f)",
-          }}
+          activeDot={{ r: 2.5, fill: color, strokeWidth: 0 }}
+          isAnimationActive={false}
         />
-      </LineChart>
+      </AreaChart>
     </div>
   );
 };

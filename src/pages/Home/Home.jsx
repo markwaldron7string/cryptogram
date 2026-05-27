@@ -68,7 +68,7 @@ const Home = () => {
           <p>Coins</p>
           <p>Price</p>
           <p style={{textAlign:"center"}}>24h Change</p>
-          <p style={{ textAlign: "center" }}>7d</p>
+          <p className="sparkline-col" style={{ textAlign: "center" }}>7d</p>
           <p className='market-cap'>Market Cap</p>
         </div>
         {
@@ -89,7 +89,9 @@ const Home = () => {
                 {Math.floor(item.price_change_percentage_24h*100)/100}
               </p>
 
-              <Sparkline data={item.sparkline_in_7d?.price} />
+              <div className="sparkline-col">
+                <Sparkline data={item.sparkline_in_7d?.price} id={item.id} />
+              </div>
 
               <p className='market-cap'>
                 {currency.symbol} {item.market_cap.toLocaleString()}

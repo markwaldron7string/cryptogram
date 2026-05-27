@@ -51,9 +51,8 @@
     cursor: pointer;
 }
 .crypto-table{
-    max-width: 800px;
+    max-width: 900px;
     margin: auto;
-    border-radius: 15px;
     background: rgba(255, 255, 255, 0.03);
     backdrop-filter: blur(10px);
     border-radius: 16px;
@@ -62,8 +61,8 @@
 }
 .table-layout{
     display: grid;
-    grid-template-columns: 0.5fr 2fr 1fr 1fr 1fr 1.5fr;
-    padding: 15px 20px;
+    grid-template-columns: 0.4fr 2fr 1fr 0.8fr 140px 1.4fr;
+    padding: 12px 20px;
     align-items: center;
     background-color: #150225;
     border-bottom: 1px solid #3c3c3c;
@@ -76,6 +75,11 @@
 }
 .market-cap{
     text-align: right;
+}
+.sparkline-col {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 .table-layout:last-child{
     border: none;
@@ -97,9 +101,23 @@
     text-align: center;
 }
 
-@media (max-width: 768px){
+@media (max-width: 900px){
     .table-layout{
-        grid-template-columns: 0.5fr 3fr 1fr 1fr;
+        grid-template-columns: 0.4fr 2fr 1fr 0.8fr 1.4fr;
+    }
+    .sparkline-col{
+        display: none;
+    }
+    .market-cap{
+        display: none;
+    }
+}
+@media (max-width: 600px){
+    .table-layout{
+        grid-template-columns: 0.4fr 2.5fr 1fr 0.8fr;
+    }
+    .sparkline-col{
+        display: none;
     }
     .market-cap{
         display: none;
