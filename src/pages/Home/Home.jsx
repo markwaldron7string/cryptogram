@@ -3,6 +3,7 @@ import './Home.css'
 import { CoinContext } from '../../context/CoinContext'
 import Sparkline from "../../components/Sparkline/Sparkline";
 import ChartModal from "../../components/ChartModal/ChartModal";
+import { fetchCoinGecko } from "../../utils/fetchCoinGecko";
 
 const Home = () => {
 
@@ -36,12 +37,10 @@ const Home = () => {
 
   const handleRowClick = async (coin) => {
   try {
-    const headers = { accept: "application/json" };
-    if (API_KEY) headers["x-cg-demo-api-key"] = API_KEY;
-
-    const res = await fetch(
-      `https://api.coingecko.com/api/v3/coins/${coin.id}/market_chart?vs_currency=${currency.name}&days=10&interval=daily`,
-      { headers }
+    const res = await fetchCoinGecko(
+      `/coins/${coin.id}/market_chart`,
+      { vs_currency: currency.name, days: "10", interval: "daily" },
+      API_KEY
     );
     const data = await res.json();
 

@@ -3,6 +3,7 @@ import "./Coin.css";
 import { useParams } from "react-router-dom";
 import { CoinContext } from "../../context/CoinContext";
 import LineChart from "../../components/LineChart/LineChart";
+import { fetchCoinGecko } from "../../utils/fetchCoinGecko";
 
 const Coin = () => {
   const { coinId } = useParams();
@@ -18,14 +19,12 @@ const Coin = () => {
       setHistoricalData(null);
 
       try {
-        const headers = { accept: "application/json" };
-        if (API_KEY) headers["x-cg-demo-api-key"] = API_KEY;
-
         const [coinRes, historyRes] = await Promise.all([
-          fetch(`https://api.coingecko.com/api/v3/coins/${coinId}`, { headers }),
-          fetch(
-            `https://api.coingecko.com/api/v3/coins/${coinId}/market_chart?vs_currency=${currency.name}&days=10&interval=daily`,
-            { headers }
+          fetchCoinGecko(`/coins/${coinId}`, {}, API_KEY),
+          fetchCoinGecko(
+            `/coins/${coinId}/market_chart`,
+            { vs_currency: currency.name, days: "10", interval: "daily" },
+            API_KEY
           ),
         ]);
 

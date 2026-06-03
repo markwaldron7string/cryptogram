@@ -1,4 +1,5 @@
 import { createContext, useEffect, useState } from "react";
+import { fetchCoinGecko } from "../utils/fetchCoinGecko";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const CoinContext = createContext();
@@ -20,12 +21,10 @@ const CoinContextProvider = (props) => {
       setCoinError("");
 
       try {
-        const headers = { accept: "application/json" };
-        if (API_KEY) headers["x-cg-demo-api-key"] = API_KEY;
-
-        const res = await fetch(
-          `https://api.coingecko.com/api/v3/coins/markets?vs_currency=${currency.name}&sparkline=true`,
-          { headers }
+        const res = await fetchCoinGecko(
+          "/coins/markets",
+          { vs_currency: currency.name, sparkline: "true" },
+          API_KEY
         );
 
         const data = await res.json();
