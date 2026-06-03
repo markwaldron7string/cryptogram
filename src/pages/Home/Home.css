@@ -84,6 +84,13 @@
 .table-layout:last-child{
     border: none;
 }
+.market-status{
+    padding: 28px 20px;
+    text-align: center;
+    color: #d9d9d9;
+    background-color: #150225;
+    border-bottom: 1px solid #3c3c3c;
+}
 .table-layout div{
     display: flex;
     align-items: center;

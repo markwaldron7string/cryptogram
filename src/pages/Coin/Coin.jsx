@@ -8,41 +8,52 @@ const Coin = () => {
   const { coinId } = useParams();
   const [coinData, setCoinData] = useState(null);
   const [historicalData, setHistoricalData] = useState(null);
+  const [coinError, setCoinError] = useState("");
   const { currency, API_KEY } = useContext(CoinContext);
 
   useEffect(() => {
     const fetchData = async () => {
+      setCoinError("");
+      setCoinData(null);
+      setHistoricalData(null);
+
       try {
+        const headers = { accept: "application/json" };
+        if (API_KEY) headers["x-cg-demo-api-key"] = API_KEY;
+
         const [coinRes, historyRes] = await Promise.all([
-          fetch(`https://api.coingecko.com/api/v3/coins/${coinId}`, {
-            headers: {
-              accept: "application/json",
-              "x-cg-demo-api-key": API_KEY,
-            },
-          }),
+          fetch(`https://api.coingecko.com/api/v3/coins/${coinId}`, { headers }),
           fetch(
             `https://api.coingecko.com/api/v3/coins/${coinId}/market_chart?vs_currency=${currency.name}&days=10&interval=daily`,
-            {
-              headers: {
-                accept: "application/json",
-                "x-cg-demo-api-key": API_KEY,
-              },
-            }
+            { headers }
           ),
         ]);
 
         const coinData = await coinRes.json();
         const historicalData = await historyRes.json();
 
+        if (!coinRes.ok || !historyRes.ok) {
+          throw new Error(
+            coinData?.error ||
+              historicalData?.error ||
+              "Unable to load coin data."
+          );
+        }
+
         setCoinData(coinData);
         setHistoricalData(historicalData);
       } catch (err) {
-        console.error(err);
+        console.error("Failed to fetch coin details:", err);
+        setCoinError("Unable to load this coin right now.");
       }
     };
 
     fetchData();
   }, [coinId, currency, API_KEY]);
+
+  if (coinError) {
+    return <div className="coin-error">{coinError}</div>;
+  }
 
   if (!coinData || !historicalData) {
     return (

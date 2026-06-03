@@ -17,6 +17,14 @@
         transform: rotate(360deg);
     }
 }
+.coin-error{
+    min-height: 70vh;
+    display: grid;
+    place-items: center;
+    padding: 0 20px;
+    color: #d9d9d9;
+    text-align: center;
+}
 .coin{
     padding: 0 20px;
 }
