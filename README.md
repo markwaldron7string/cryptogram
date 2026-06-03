@@ -1,6 +1,6 @@
-# Cryptogram
-
 ![CI](https://github.com/markwaldron7string/cryptogram/actions/workflows/ci.yml/badge.svg)
+
+# Cryptogram
 
 > A real-time cryptocurrency dashboard that tracks live prices, market data, and historical trends across hundreds of coins, powered by the CoinGecko API.
 
