@@ -32,17 +32,28 @@ Cryptogram pulls live market data from the CoinGecko API and presents it in a br
 - **react-loading-skeleton** — loading placeholders
 - **CoinGecko API** — live cryptocurrency market data
 - **Vitest** + **Testing Library** — unit testing
-- **GitHub Pages** — deployment
+- **Vercel** — deployment (auto-deploys on every push to `main`)
 
 ## Testing
 
-Pure data-transformation logic is unit-tested with Vitest. The sparkline helpers — downsampling a price series to a clean set of points (always preserving the most recent price) and determining whether a coin's trend is positive — are covered with tests for their core cases and boundaries.
+Unit-tested with Vitest and Testing Library, covering logic and error handling rather than presentational markup:
+
+- **Sparkline helpers** — downsampling a price series to a clean set of points (always preserving the most recent price) and determining whether a coin's trend is positive, with tests for core cases and boundaries.
+- **Data mapping** — the functions that reshape API responses (including the CoinRanking fallback source) into the app's coin-table and coin-detail shapes, with deterministic timestamp handling.
+- **Context resilience** — the coin data provider is tested against a failed API response (mocked fetch) to confirm it degrades gracefully: the coin list stays a valid array and a user-friendly error message is surfaced rather than crashing the UI.
+
+All network access in tests is mocked, so the suite never calls the live API.
 
 ```bash
 npm test
 ```
 
 The same suite runs in CI on every push and pull request (see the badge above).
+
+## CI/CD
+
+- **CI** — GitHub Actions runs the Vitest suite on every push and pull request (the badge above reflects its status).
+- **CD** — Deployment is handled automatically by Vercel, which builds and ships every push to `main`. The CoinGecko API key is configured as a Vercel environment variable rather than committed to the repo.
 
 ## Running Locally
 
