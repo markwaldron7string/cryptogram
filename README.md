@@ -6,6 +6,8 @@
 
 **[→ Live Demo](https://cryptogram-six.vercel.app/)**
 
+![Cryptogram app preview](docs/cryptogram-preview.png)
+
 ---
 
 ## What It Does
