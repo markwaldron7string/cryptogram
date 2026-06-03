@@ -1,8 +1,10 @@
-import { useEffect, useState } from "react";
-import { CoinContext } from "./CoinContext";
+import { createContext, useEffect, useState } from "react";
+
+// eslint-disable-next-line react-refresh/only-export-components
+export const CoinContext = createContext();
 
 const CoinContextProvider = (props) => {
-  const API_KEY = "CG-wtRDt8UMCUTzDcZZSq9Rdzw7";
+  const API_KEY = import.meta.env.VITE_COINGECKO_KEY;
 
   const [allCoins, setAllCoins] = useState([]);
   const [currency, setCurrency] = useState({
@@ -13,14 +15,12 @@ const CoinContextProvider = (props) => {
   useEffect(() => {
     const fetchAllCoins = async () => {
       try {
+        const headers = { accept: "application/json" };
+        if (API_KEY) headers["x-cg-demo-api-key"] = API_KEY;
+
         const res = await fetch(
           `https://api.coingecko.com/api/v3/coins/markets?vs_currency=${currency.name}&sparkline=true`,
-          {
-            headers: {
-              accept: "application/json",
-              "x-cg-demo-api-key": API_KEY,
-            },
-          }
+          { headers }
         );
 
         const data = await res.json();
