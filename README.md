@@ -1,5 +1,10 @@
 ![CI](https://github.com/markwaldron7string/cryptogram/actions/workflows/ci.yml/badge.svg)
 ![E2E](https://github.com/markwaldron7string/cryptogram/actions/workflows/cypress.yml/badge.svg)
+[![React](https://img.shields.io/badge/React-19-61dafb?logo=react&logoColor=black)](https://react.dev)
+[![Vite](https://img.shields.io/badge/Vite-7-646cff?logo=vite&logoColor=white)](https://vitejs.dev)
+[![Vitest](https://img.shields.io/badge/Tested-Vitest-6e9f18?logo=vitest&logoColor=white)](https://vitest.dev)
+[![CoinGecko](https://img.shields.io/badge/CoinGecko_API-8DC647?logo=coingecko&logoColor=white)](https://coingecko.com)
+[![Vercel](https://img.shields.io/badge/Deployed-Vercel-000000?logo=vercel&logoColor=white)](YOUR_LIVE_URL)
 
 # Cryptogram
 
