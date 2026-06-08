@@ -1,6 +1,6 @@
 describe('Cryptogram smoke test', () => {
   beforeEach(() => {
-    // Home fetches /coins/markets on load — intercept before visiting.
+    // Home fetches /coins/markets on load - intercept before visiting.
     cy.intercept('GET', '**/coins/markets*', { fixture: 'coins.json' }).as('markets')
   })
 

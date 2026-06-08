@@ -1,4 +1,4 @@
-// Pure helpers for Sparkline — extracted so they can be tested in isolation.
+// Pure helpers for Sparkline - extracted so they can be tested in isolation.
 
 // Downsample a price array to ~targetPoints, always keeping the last point,
 // and reshape into the {price, index} objects recharts expects.
