@@ -9,11 +9,11 @@
 
 # Cryptogram
 
-> A real-time cryptocurrency market dashboard — live prices, sparklines, interactive charts, and global market stats for 750+ assets. Portfolio demo project, not financial advice.
+> A real-time cryptocurrency market dashboard. Live prices, sparklines, interactive charts, and global market stats for 750+ assets. Portfolio demo project, not financial advice.
 
 **[→ Live Demo](https://cryptogram-six.vercel.app/)**
 
-![Cryptogram homepage — live market dashboard with stats bar, searchable coin table, sparklines, and cyan tech UI](docs/cryptogram-preview.png)
+![Cryptogram homepage || live market dashboard with stats bar, searchable coin table, sparklines, and cyan tech UI](docs/cryptogram-preview.png)
 
 ---
 
@@ -21,7 +21,7 @@
 
 Cryptogram pulls live market data from the CoinGecko API and presents it in a fast, responsive dashboard. Browse ranked coins with prices, 24h movement, and 7-day sparklines; drill into individual assets for multi-timeframe charts; compare up to three coins side-by-side; and track favorites in a persistent watchlist.
 
-Built as a portfolio piece to demonstrate modern React patterns, API integration, error handling, and test coverage — not a commercial product.
+Built as a portfolio piece to demonstrate modern React patterns, API integration, error handling, and test coverage. Not a commercial product.
 
 ## Features
 
@@ -66,12 +66,12 @@ cypress/e2e/        # Smoke, navigation, and README screenshot specs
 
 ## Testing
 
-All tests run without hitting live APIs — network calls are mocked in unit tests and intercepted in Cypress.
+All tests run without hitting live APIs - network calls are mocked in unit tests and intercepted in Cypress.
 
 | Command | What it runs |
 |---------|--------------|
-| `npm test` | Vitest — 19 unit tests (formatters, sparkline helpers, API mapping, context, currencies) |
-| `npm run test:e2e` | Cypress — 7 E2E tests (smoke, search, modal, routing, tabs, screenshot) |
+| `npm test` | Vitest - 19 unit tests (formatters, sparkline helpers, API mapping, context, currencies) |
+| `npm run test:e2e` | Cypress - 7 E2E tests (smoke, search, modal, routing, tabs, screenshot) |
 | `npm run lint` | ESLint across `src/`, `api/`, and `cypress/` |
 
 **CI** (on every push/PR to `main`): lint + Vitest  
@@ -102,7 +102,7 @@ CoinGecko works without a key via the built-in dev proxy. For higher rate limits
 VITE_COINGECKO_KEY=your-demo-api-key
 ```
 
-The key is used **server-side** by the Vite dev middleware and Vercel proxy — it is not required for the app to function. Invalid keys are automatically retried without authentication.
+The key is used **server-side** by the Vite dev middleware and Vercel proxy - it is not required for the app to function. Invalid keys are automatically retried without authentication.
 
 ## Available Scripts
 
@@ -117,15 +117,15 @@ The key is used **server-side** by the Vite dev middleware and Vercel proxy — 
 
 ## CI/CD
 
-- **CI** — ESLint + Vitest on every push and pull request
-- **E2E** — Cypress against a production build on every push and PR
-- **CD** — Vercel auto-deploys `main`; set `COINGECKO_API_KEY` or `VITE_COINGECKO_KEY` in Vercel env for production rate limits
+- **CI** - ESLint + Vitest on every push and pull request
+- **E2E** - Cypress against a production build on every push and PR
+- **CD** - Vercel auto-deploys `main`; set `COINGECKO_API_KEY` or `VITE_COINGECKO_KEY` in Vercel env for production rate limits
 
 ---
 
 ## Interview Talking Points
 
-Use these as starting points — adapt them to your own voice. You don't need to know every detail cold; focus on the *why* behind each decision.
+Use these as starting points - adapt them to your own voice. You don't need to know every detail cold; focus on the *why* behind each decision.
 
 ### Elevator pitch (30 seconds)
 
@@ -133,38 +133,38 @@ Use these as starting points — adapt them to your own voice. You don't need to
 
 ### Architecture & state
 
-- **"I used React Context for shared state — coins, currency, theme, watchlist — because the app is small enough that Redux would be overkill, but multiple pages still need the same data."**
+- **"I used React Context for shared state - coins, currency, theme, watchlist - because the app is small enough that Redux would be overkill, but multiple pages still need the same data."**
 - **"Currency and theme persist user preference; the watchlist uses `localStorage` so there's no backend needed for a demo."**
 - **"I separated pure utilities (`formatters`, `sparklineData`, `currencies`) from components so the logic is easy to unit test without rendering UI."**
 
 ### API & error handling
 
-- **"All client requests go through `/api/coingecko` — locally via a Vite middleware, in production via a Vercel serverless function. That keeps the API key off the client and lets me add fallback logic in one place."**
-- **"If CoinGecko fails, I fall back to CoinRanking and map their response into the same shape my UI expects — so the user still sees data instead of a blank screen."**
+- **"All client requests go through `/api/coingecko` - locally via a Vite middleware, in production via a Vercel serverless function. That keeps the API key off the client and lets me add fallback logic in one place."**
+- **"If CoinGecko fails, I fall back to CoinRanking and map their response into the same shape my UI expects - so the user still sees data instead of a blank screen."**
 - **"I learned the hard way that sending an invalid API key causes 401 errors; I fixed it by validating the key length and retrying without auth, since CoinGecko's public tier works without a key."**
 - **"Global market stats are fetched separately from the coin list so a failure on one endpoint doesn't break the entire page."**
 
 ### UX decisions
 
 - **"I fetch up to 750 coins in parallel (3 × 250 per CoinGecko's max) and paginate client-side so search and tabs feel instant."**
-- **"Auto-refresh runs every 60 seconds but only shows the skeleton on the first load — existing data stays visible during background sync."**
+- **"Auto-refresh runs every 60 seconds but only shows the skeleton on the first load - existing data stays visible during background sync."**
 - **"The compare page normalizes prices to percentage change so you can overlay Bitcoin and Ethereum on one chart even though their absolute prices are very different."**
 
 ### Testing
 
-- **"Unit tests cover the 'boring but important' stuff — data mapping, sparkline math, and what happens when the API returns an error object instead of an array."**
+- **"Unit tests cover the 'boring but important' stuff - data mapping, sparkline math, and what happens when the API returns an error object instead of an array."**
 - **"Cypress tests intercept network calls with fixtures so CI never depends on CoinGecko being up or rate-limiting us."**
-- **"I added lint to CI after hitting React hooks warnings locally — catching those before merge saves review time."**
+- **"I added lint to CI after hitting React hooks warnings locally - catching those before merge saves review time."**
 
 ### What you'd improve next (shows growth mindset)
 
-- **"I'd add code-splitting for Recharts to shrink the main bundle — it's the biggest chunk right now."**
+- **"I'd add code-splitting for Recharts to shrink the main bundle - it's the biggest chunk right now."**
 - **"WebSocket or SSE for true tick-by-tick prices would be the next step for a production app."**
 - **"I'd extract the table into a virtualized list if I needed to render thousands of rows without pagination."**
 
 ### Honest "still learning" framings
 
-- **"I'm comfortable reading API docs and debugging network issues — the CoinGecko key bug taught me to always check what's actually being sent in the request."**
+- **"I'm comfortable reading API docs and debugging network issues - the CoinGecko key bug taught me to always check what's actually being sent in the request."**
 - **"I'm still building intuition for when to reach for Context vs. local state, but this project helped me draw the line: global user preferences and fetched data go in Context; form inputs and modals stay local."**
 - **"Writing tests before felt intimidating; now I start with the pure functions because they're fast to test and give me confidence when I refactor UI."**
 
@@ -172,4 +172,4 @@ Use these as starting points — adapt them to your own voice. You don't need to
 
 ## License
 
-Private portfolio project — not licensed for commercial use.
+Private portfolio project - not licensed for commercial use.
