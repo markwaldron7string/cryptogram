@@ -1,0 +1,21 @@
+.logo-svg .logo-mark {
+  animation: logo-float 4s ease-in-out infinite;
+}
+
+.logo-svg .logo-core {
+  animation: logo-pulse 2s ease-in-out infinite;
+}
+
+@keyframes logo-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-1px); }
+}
+
+@keyframes logo-pulse {
+  0%, 100% { opacity: 1; r: 2.5; }
+  50% { opacity: 0.6; }
+}
+
+.navbar-brand:hover .logo-svg .logo-mark {
+  filter: drop-shadow(0 0 8px rgba(0, 240, 255, 0.6));
+}

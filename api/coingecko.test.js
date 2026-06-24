@@ -3,7 +3,7 @@ import {
   mapCoinRankingDetailCoin,
   mapCoinRankingMarketCoin,
   mapSparklineToHistoricalData,
-} from "./coingecko";
+} from "./coingeckoHandler.js";
 
 const coinRankingCoin = {
   uuid: "Qwsogvtv82FCd",

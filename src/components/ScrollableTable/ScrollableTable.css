@@ -1,0 +1,73 @@
+.scrollable-table {
+  position: relative;
+}
+
+.scrollable-table-viewport {
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent-dim) transparent;
+}
+
+.scrollable-table-viewport::-webkit-scrollbar {
+  height: 4px;
+}
+
+.scrollable-table-viewport::-webkit-scrollbar-thumb {
+  background: var(--accent-dim);
+  border-radius: 2px;
+}
+
+.scrollable-table-inner {
+  min-width: 960px;
+}
+
+.scroll-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 56px;
+  border: 1px solid var(--border-glow);
+  border-radius: var(--radius-sm);
+  background: var(--bg-secondary);
+  color: var(--accent);
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s, background 0.2s, box-shadow 0.2s;
+  box-shadow: var(--shadow-glow);
+}
+
+.scroll-arrow svg {
+  width: 20px;
+  height: 20px;
+}
+
+.scroll-arrow.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.scroll-arrow:hover {
+  background: var(--bg-card-hover);
+  box-shadow: 0 0 20px var(--accent-glow);
+}
+
+.scroll-arrow-left {
+  left: 4px;
+}
+
+.scroll-arrow-right {
+  right: 4px;
+}
+
+@media (max-width: 768px) {
+  .scroll-arrow {
+    width: 28px;
+    height: 48px;
+  }
+}

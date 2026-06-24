@@ -1,7 +1,10 @@
-import React, { useMemo } from "react";
+import React, { useContext, useMemo } from "react";
 import { AreaChart, Area, Tooltip } from "recharts";
+import { CoinContext } from "../../context/CoinContext";
+import { formatPrice } from "../../utils/formatters";
+import { buildSparklineData, isPositiveTrend } from "./sparklineData";
 
-const SparkTooltip = ({ active, payload, color }) => {
+const SparkTooltip = ({ active, payload, color, currencySymbol }) => {
   if (active && payload && payload.length) {
     return (
       <div
@@ -17,10 +20,7 @@ const SparkTooltip = ({ active, payload, color }) => {
           pointerEvents: "none",
         }}
       >
-        ${payload[0].value.toLocaleString(undefined, {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        })}
+        {formatPrice(payload[0].value, currencySymbol)}
       </div>
     );
   }
@@ -28,16 +28,18 @@ const SparkTooltip = ({ active, payload, color }) => {
 };
 
 const Sparkline = ({ data, id = "coin" }) => {
-  const { formattedData, isPositive } = useMemo(() => {
-    if (!data || data.length === 0) return { formattedData: [], isPositive: true };
+  const { currency } = useContext(CoinContext);
 
-    // Downsample to ~30 points for a clean sparkline
-    const step = Math.max(1, Math.floor(data.length / 30));
-    const sampled = data.filter((_, i) => i % step === 0 || i === data.length - 1);
+  const { formattedData, isPositive } = useMemo(() => {
+    if (!data || data.length === 0) {
+      return { formattedData: [], isPositive: true };
+    }
+
+    const formattedData = buildSparklineData(data);
 
     return {
-      formattedData: sampled.map((price, index) => ({ price, index })),
-      isPositive: data[data.length - 1] >= data[0],
+      formattedData,
+      isPositive: isPositiveTrend(data),
     };
   }, [data]);
 
@@ -45,7 +47,7 @@ const Sparkline = ({ data, id = "coin" }) => {
     return <div style={{ width: 120, height: 40 }} />;
   }
 
-  const color = isPositive ? "#00C087" : "#FF4747";
+  const color = isPositive ? "#00ff88" : "#ff3366";
   const gradId = `spark-grad-${id}`;
 
   return (
@@ -65,7 +67,9 @@ const Sparkline = ({ data, id = "coin" }) => {
         </defs>
 
         <Tooltip
-          content={<SparkTooltip color={color} />}
+          content={
+            <SparkTooltip color={color} currencySymbol={currency.symbol} />
+          }
           cursor={{ stroke: color, strokeWidth: 1, strokeDasharray: "3 3" }}
           allowEscapeViewBox={{ x: true, y: true }}
         />

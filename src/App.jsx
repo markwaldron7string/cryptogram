@@ -1,34 +1,36 @@
-import React from 'react'
-import Navbar from './components/Navbar/Navbar'
-import { Routes, Route } from 'react-router-dom'
-import Home from './pages/Home/Home'
-import Coin from './pages/Coin/Coin'
-import Footer from './components/Footer/Footer'
-import Toast from './components/Toast/Toast'
-import { useState } from 'react'
+import React, { useEffect } from "react";
+import Navbar from "./components/Navbar/Navbar";
+import { Routes, Route, useLocation } from "react-router-dom";
+import Home from "./pages/Home/Home";
+import Coin from "./pages/Coin/Coin";
+import About from "./pages/About/About";
+import Compare from "./pages/Compare/Compare";
+import NotFound from "./pages/NotFound/NotFound";
+import Footer from "./components/Footer/Footer";
 
-const App = () => {
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  return null;
+};
 
-  const [showToast, setShowToast] = useState(false);
+const App = () => (
+  <div className="app">
+    <ScrollToTop />
+    <Navbar />
 
-  return (
-    <div className='app'>
-      <Navbar setShowToast={setShowToast} />
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/coin/:coinId" element={<Coin />} />
+      <Route path="/compare" element={<Compare />} />
+      <Route path="/about" element={<About />} />
+      <Route path="*" element={<NotFound />} />
+    </Routes>
 
-      <Routes>
-        <Route path='/' element={<Home/>}/>
-        <Route path='/coin/:coinId' element={<Coin/>}/>
-      </Routes>
+    <Footer />
+  </div>
+);
 
-      <Footer/>
-
-      <Toast
-        message="Feature coming soon 🚀"
-        show={showToast}
-        setShow={setShowToast}
-      />
-    </div>
-  )
-}
-
-export default App
+export default App;

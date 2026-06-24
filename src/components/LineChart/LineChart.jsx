@@ -8,8 +8,9 @@ import {
   ResponsiveContainer,
   CartesianGrid,
 } from "recharts";
+import { formatPrice } from "../../utils/formatters";
 
-const CustomTooltip = ({ active, payload, label, color }) => {
+const CustomTooltip = ({ active, payload, label, color, currencySymbol }) => {
   if (active && payload && payload.length) {
     return (
       <div
@@ -24,12 +25,11 @@ const CustomTooltip = ({ active, payload, label, color }) => {
           pointerEvents: "none",
         }}
       >
-        <p style={{ color: "#aaa", margin: 0, marginBottom: 4, fontSize: 11 }}>{label}</p>
+        <p style={{ color: "#aaa", margin: 0, marginBottom: 4, fontSize: 11 }}>
+          {label}
+        </p>
         <p style={{ color, margin: 0, fontWeight: 600 }}>
-          ${payload[0].value.toLocaleString(undefined, {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          })}
+          {formatPrice(payload[0].value, currencySymbol)}
         </p>
       </div>
     );
@@ -37,18 +37,26 @@ const CustomTooltip = ({ active, payload, label, color }) => {
   return null;
 };
 
-const LineChart = ({ historicalData }) => {
+const formatChartDate = (timestamp, days) => {
+  const date = new Date(timestamp);
+  if (days <= 1) {
+    return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  }
+  if (days <= 90) {
+    return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+  }
+  return date.toLocaleDateString("en-US", { month: "short", year: "2-digit" });
+};
+
+const LineChart = ({ historicalData, currencySymbol = "$", days = 7 }) => {
   const data = useMemo(() => {
     if (!historicalData?.prices) return [];
 
     return historicalData.prices.map(([timestamp, price]) => ({
-      date: new Date(timestamp).toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-      }),
+      date: formatChartDate(timestamp, days),
       price,
     }));
-  }, [historicalData]);
+  }, [historicalData, days]);
 
   if (!data.length) {
     return (
@@ -59,17 +67,27 @@ const LineChart = ({ historicalData }) => {
   }
 
   const isPositive = data[data.length - 1].price >= data[0].price;
-  const color = isPositive ? "#00C087" : "#FF4747";
-  const gradId = "modal-chart-grad";
+  const color = isPositive ? "#00ff88" : "#ff3366";
+  const gradId = `chart-grad-${days}`;
 
   const minPrice = Math.min(...data.map((d) => d.price));
   const maxPrice = Math.max(...data.map((d) => d.price));
-  const padding = (maxPrice - minPrice) * 0.08;
+  const padding = (maxPrice - minPrice) * 0.08 || maxPrice * 0.01;
+
+  const formatYAxis = (v) => {
+    if (v >= 1000) {
+      return `${currencySymbol}${(v / 1000).toFixed(1)}k`;
+    }
+    return formatPrice(v, currencySymbol);
+  };
 
   return (
     <div style={{ width: "100%", height: "100%" }}>
       <ResponsiveContainer>
-        <AreaChart data={data} margin={{ top: 10, right: 10, bottom: 0, left: 10 }}>
+        <AreaChart
+          data={data}
+          margin={{ top: 10, right: 10, bottom: 0, left: 10 }}
+        >
           <defs>
             <linearGradient id={gradId} x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor={color} stopOpacity={0.35} />
@@ -90,6 +108,7 @@ const LineChart = ({ historicalData }) => {
             tick={{ fill: "#666", fontSize: 11 }}
             tickLine={false}
             axisLine={false}
+            minTickGap={40}
           />
 
           <YAxis
@@ -97,17 +116,15 @@ const LineChart = ({ historicalData }) => {
             tick={{ fill: "#666", fontSize: 11 }}
             tickLine={false}
             axisLine={false}
-            tickFormatter={(v) =>
-              v >= 1000
-                ? `$${(v / 1000).toFixed(1)}k`
-                : `$${v.toLocaleString(undefined, { maximumFractionDigits: 2 })}`
-            }
+            tickFormatter={formatYAxis}
             domain={[minPrice - padding, maxPrice + padding]}
             width={70}
           />
 
           <Tooltip
-            content={<CustomTooltip color={color} />}
+            content={
+              <CustomTooltip color={color} currencySymbol={currencySymbol} />
+            }
             cursor={{ stroke: color, strokeWidth: 1, strokeDasharray: "4 4" }}
           />
 

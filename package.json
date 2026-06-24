@@ -6,6 +6,7 @@
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:e2e": "cypress run",
     "start": "vite",
     "dev": "vite",
     "build": "vite build",

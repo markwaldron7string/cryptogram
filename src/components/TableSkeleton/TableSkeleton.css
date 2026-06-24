@@ -1,0 +1,8 @@
+.skeleton-row {
+  display: grid;
+  grid-template-columns: 32px 48px minmax(160px, 2fr) minmax(100px, 1fr) 80px 140px minmax(100px, 1.2fr);
+  padding: 14px 20px;
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+  gap: 8px;
+}

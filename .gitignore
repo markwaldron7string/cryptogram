@@ -29,4 +29,7 @@ pnpm-workspace.yaml
 
 # Testing
 .env
+cypress/screenshots
+cypress/videos
+cypress/downloads
 .vercel

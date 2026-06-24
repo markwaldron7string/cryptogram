@@ -1,98 +1,90 @@
 import React, { useContext } from "react";
+import { Link, useLocation } from "react-router-dom";
 import "./Navbar.css";
-import logo from "../../assets/logo.png";
-import arrow_icon from "../../assets/arrow_icon.png";
+import Logo from "../Logo/Logo";
+import { RefreshIcon } from "../Icons/Icons";
+import "../Icons/Icons.css";
 import { CoinContext } from "../../context/CoinContext";
-import { Link } from "react-router-dom";
+import { useTheme } from "../../context/ThemeContext";
+import { CURRENCIES } from "../../utils/currencies";
 
-const Navbar = ({ setShowToast }) => {
-  const { setCurrency } = useContext(CoinContext);
+const Navbar = () => {
+  const { currency, setCurrency, lastUpdated, refreshCoins, isLoadingCoins } =
+    useContext(CoinContext);
+  const { theme, toggleTheme } = useTheme();
+  const [menuOpen, setMenuOpen] = React.useState(false);
+  const location = useLocation();
 
-  const currencyHandler = (event) => {
-    switch (event.target.value) {
-      case "usd":
-        setCurrency({ name: "usd", symbol: "$" });
-        break;
-      case "eur":
-        setCurrency({ name: "eur", symbol: "€" });
-        break;
-      case "gbp":
-        setCurrency({ name: "gbp", symbol: "£" });
-        break;
-      default:
-        setCurrency({ name: "usd", symbol: "$" });
-    }
-  };
+  const isActive = (path) => location.pathname === path;
+  const closeMenu = () => setMenuOpen(false);
 
   return (
-    <div className="navbar">
-      <Link to={"/"}>
-        <img src={logo} alt="" className="logo" />
+    <header className="navbar">
+      <Link to="/" className="navbar-brand" onClick={closeMenu}>
+        <Logo className="logo" />
       </Link>
 
-      <ul>
-        <Link to={"/"}>
-          <li className="home-btn">Home</li>
+      <nav className={`navbar-nav ${menuOpen ? "open" : ""}`}>
+        <Link to="/" className={`nav-link ${isActive("/") ? "active" : ""}`} onClick={closeMenu}>
+          Markets
         </Link>
-
-        <li>
-          <span
-            className="coming-soon"
-            onClick={(e) => {
-              e.preventDefault();
-              setShowToast(true);
-            }}
-            title="Coming soon"
-          >
-            Features
-          </span>
-        </li>
-
-        <li>
-          <span
-            className="coming-soon"
-            onClick={(e) => {
-              e.preventDefault();
-              setShowToast(true);
-            }}
-            title="Coming soon"
-          >
-            Pricing
-          </span>
-        </li>
-
-        <li>
-          <span
-            className="coming-soon"
-            onClick={(e) => {
-              e.preventDefault();
-              setShowToast(true);
-            }}
-            title="Coming soon"
-          >
-            Blog
-          </span>
-        </li>
-      </ul>
+        <Link to="/compare" className={`nav-link ${isActive("/compare") ? "active" : ""}`} onClick={closeMenu}>
+          Compare
+        </Link>
+        <Link to="/about" className={`nav-link ${isActive("/about") ? "active" : ""}`} onClick={closeMenu}>
+          About
+        </Link>
+      </nav>
 
       <div className="nav-right">
-        <select onChange={currencyHandler}>
-          <option value="usd">USD</option>
-          <option value="eur">EUR</option>
-          <option value="gbp">GBP</option>
+        {lastUpdated && (
+          <span className="last-updated" title={lastUpdated.toLocaleString()}>
+            <span className="live-dot" aria-hidden="true" />
+            <span className="mono">{isLoadingCoins ? "SYNC…" : "LIVE"}</span>
+          </span>
+        )}
+
+        <button
+          className="theme-toggle"
+          onClick={toggleTheme}
+          aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+        >
+          {theme === "dark" ? "☀" : "☾"}
+        </button>
+
+        <select
+          value={currency.name}
+          onChange={(e) => setCurrency(e.target.value)}
+          aria-label="Select currency"
+          className="currency-select"
+        >
+          {CURRENCIES.map((c) => (
+            <option key={c.code} value={c.code}>
+              {c.label}
+            </option>
+          ))}
         </select>
 
         <button
-          className="coming-soon-btn"
-          onClick={(e) => {
-            e.preventDefault();
-            setShowToast(true);
-          }}
+          className="refresh-btn"
+          onClick={refreshCoins}
+          disabled={isLoadingCoins}
+          aria-label="Refresh market data"
+          title="Refresh"
         >
-          Sign Up <img src={arrow_icon} alt="" />
+          <RefreshIcon spinning={isLoadingCoins} />
+        </button>
+
+        <button
+          className="menu-toggle"
+          onClick={() => setMenuOpen(!menuOpen)}
+          aria-label={menuOpen ? "Close menu" : "Open menu"}
+          aria-expanded={menuOpen}
+        >
+          {menuOpen ? "✕" : "☰"}
         </button>
       </div>
-    </div>
+    </header>
   );
 };
 

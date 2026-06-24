@@ -1,0 +1,23 @@
+{
+  "id": "bitcoin",
+  "symbol": "btc",
+  "name": "Bitcoin",
+  "image": {
+    "large": "https://coin-images.coingecko.com/coins/images/1/large/bitcoin.png"
+  },
+  "market_cap_rank": 1,
+  "market_data": {
+    "current_price": { "usd": 62909, "eur": 58000, "gbp": 49000 },
+    "market_cap": { "usd": 1261103823546, "eur": 1160000000000, "gbp": 980000000000 },
+    "total_volume": { "usd": 30859322074, "eur": 28000000000, "gbp": 24000000000 },
+    "high_24h": { "usd": 64168, "eur": 59000, "gbp": 50000 },
+    "low_24h": { "usd": 62001, "eur": 57000, "gbp": 48000 },
+    "circulating_supply": 20047125,
+    "ath": { "usd": 126080, "eur": 115000, "gbp": 98000 },
+    "ath_change_percentage": { "usd": -50.1, "eur": -50.1, "gbp": -50.1 },
+    "price_change_percentage_24h": -1.55
+  },
+  "description": {
+    "en": "Bitcoin is the first decentralized cryptocurrency. It was released in 2009. It enables peer-to-peer transactions."
+  }
+}

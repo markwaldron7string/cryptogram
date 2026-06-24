@@ -1,10 +1,4 @@
-const COINGECKO_API_URL = "https://api.coingecko.com/api/v3";
-
-const shouldUseProxy = () => {
-  if (typeof window === "undefined") return false;
-
-  return !["localhost", "127.0.0.1", ""].includes(window.location.hostname);
-};
+const COINGECKO_PROXY = "/api/coingecko";
 
 const buildQuery = (url, query) => {
   Object.entries(query).forEach(([key, value]) => {
@@ -14,20 +8,20 @@ const buildQuery = (url, query) => {
   });
 };
 
-export const fetchCoinGecko = (path, query = {}, apiKey = "") => {
-  if (shouldUseProxy()) {
-    const url = new URL("/api/coingecko", window.location.origin);
-    url.searchParams.set("path", path);
-    buildQuery(url, query);
+export const fetchCoinGecko = (path, query = {}) => {
+  const url = new URL(COINGECKO_PROXY, window.location.origin);
+  url.searchParams.set("path", path);
+  buildQuery(url, query);
+  return fetch(url);
+};
 
-    return fetch(url);
+export const fetchCoinGeckoJson = async (path, query = {}) => {
+  const res = await fetchCoinGecko(path, query);
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data?.error || data?.status?.error_message || `Request failed (${res.status})`);
   }
 
-  const url = new URL(`${COINGECKO_API_URL}${path}`);
-  buildQuery(url, query);
-
-  const headers = { accept: "application/json" };
-  if (apiKey) headers["x-cg-demo-api-key"] = apiKey;
-
-  return fetch(url, { headers });
+  return data;
 };
